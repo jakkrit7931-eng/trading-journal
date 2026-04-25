@@ -1480,7 +1480,7 @@ function migrateTradeV5(t){
   if(!t.exitDate&&t.date&&t.exitTime){t.exitDate=t.date;}
   return t;
 }
-function saveData(){localStorage.setItem(DB,JSON.stringify(trades));}
+function saveData(){localStorage.setItem(DB,JSON.stringify(trades));scheduleSave();}
 function saveSettings(){
   settings.maxDailyLoss=parseFloat(document.getElementById('s-maxloss').value)||150;
   settings.maxConsecLoss=parseInt(document.getElementById('s-maxcon').value)||2;
