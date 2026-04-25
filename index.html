@@ -3372,15 +3372,23 @@ saveSettings=function(){_origSaveSettings();scheduleSave();};
 
 // --- INIT AUTH ---
 (async function initAuth(){
+  // Handle hash token from OAuth redirect (mobile)
+  var hash=window.location.hash||'';
+  if(hash.includes('access_token')){
+    await supabase.auth.getSession();
+    history.replaceState(null,'',window.location.pathname+window.location.search);
+  }
+  supabase.auth.onAuthStateChange(function(event,session){
+    if((event==='SIGNED_IN'||event==='INITIAL_SESSION')&&session&&session.user){
+      history.replaceState(null,'',window.location.pathname+window.location.search);
+      onUserSignedIn(session.user);
+    }
+    if(event==='SIGNED_OUT'){currentUser=null;document.getElementById('auth-overlay').classList.remove('hidden');}
+  });
   var{data}=await supabase.auth.getSession();
   if(data&&data.session&&data.session.user){
     onUserSignedIn(data.session.user);
   }
-  // else overlay stays visible
-  supabase.auth.onAuthStateChange(function(event,session){
-    if(event==='SIGNED_IN'&&session&&session.user){onUserSignedIn(session.user);}
-    if(event==='SIGNED_OUT'){currentUser=null;document.getElementById('auth-overlay').classList.remove('hidden');}
-  });
 })();
 
 // ===================== INIT CALLS =====================
