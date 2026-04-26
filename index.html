@@ -3311,7 +3311,8 @@ function setSyncStatus(state,label){
 // --- CLOUD SAVE (debounced) ---
 function scheduleSave(){
   clearTimeout(syncTimer);
-  syncTimer=setTimeout(cloudSave,2000);
+  syncTimer=setTimeout(cloudSave,500);
+  cloudSave();
 }
 
 async function cloudSave(){
